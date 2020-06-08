@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 /> 
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui' />
+<title>primer mapa GC</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css">
+<style type="text/css">
+     <!-- .leaflet-control-attribution{display: none;} -->
+</style>
+</head>
+<body>
+<h1>Mapa GC</h1> 
+<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+<div id="map" class="map map-home" style="margin:8px 0 8px 0;height:500px;"></div>
+<script type="text/javascript" src="scripts/polotic.js"></script> 
+<script type="text/javascript" src="scripts/parquetic.js"></script>
+<script type="text/javascript" src="scripts/centrosdesalud.js"></script>
+<script type="text/javascript" src="scripts/hospitales.js"></script>
+<script type="text/javascript" src="scripts/godoycruz.js"></script>
+<script>
+/* BASE LAYERS */
+	var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+		osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+		mapabase_osm = L.tileLayer(osmUrl, {maxZoom: 20, attribution: osmAttrib});
+	var otUrl = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+		otAttrib = 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+		mapabase_ot = L.tileLayer(otUrl, {maxZoom: 20, attribution: otAttrib});
+
+/* OVERLAYS Y GRUPOS */
+	var plazagc = L.marker([-32.92524, -68.84439]).bindPopup('Plaza GC.').openPopup(),
+		polotic = L.geoJson(polotic),
+	    parquetic = L.geoJson(parquetic),
+    	centrosdesalud = L.geoJson(centrosdesalud),
+    	hospitales = L.geoJson(hospitales),
+    	godoycruz = L.geoJson(godoycruz);
+	var grupo1 = L.layerGroup([plazagc, polotic]);
+	var grupo2 = L.layerGroup([parquetic, centrosdesalud]);
+	var grupo3 = L.layerGroup([hospitales, godoycruz]);
+
+/* CREACIÓN DEL MAPA CON BASE LAYERS Y OVERLAYS */
+	var map = L.map('map', {
+		layers: [mapabase_osm, grupo1, grupo3]
+	}).setView([-32.9314, -68.8497], 13);
+
+/* CREACIÓN DEL LAYERS CONTROL */
+	var baseMaps = {
+		"OpenStreetMap": mapabase_osm,
+		"OpenTopoMap": mapabase_ot
+	};
+	
+	var overlayMaps = {
+		"Grupo 1": grupo1,
+		"Grupo 2": grupo2,
+		"Grupo 3": grupo3
+	};
+
+   	L.control.layers(baseMaps, overlayMaps).addTo(map);
+</script>
+  </body>
+</html>
+       
+
+      
